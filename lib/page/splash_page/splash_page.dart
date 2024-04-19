@@ -1,4 +1,5 @@
 import 'package:belajar_api_movie/page/home/home_page.dart';
+import 'package:belajar_api_movie/page/home/new_home_page_infinite_scroll_page.dart';
 import 'package:belajar_api_movie/page/login/login_page.dart';
 import 'package:belajar_api_movie/utils/shared_pref.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,8 @@ class _SplashPageState extends State<SplashPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const HomePage(),
+              // builder: (context) => const HomePage(),
+              builder: (context) => const NewHomePageInfiniteScrollPage(),
             ),
           );
         } else {

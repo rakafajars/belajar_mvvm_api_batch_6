@@ -40,9 +40,13 @@ class _DetailMoviePageState extends State<DetailMoviePage> {
   @override
   void initState() {
     getDetailMovie();
-    Provider.of<DetailMovieViewModel>(context).getMovieRecommendation(
-      idMovie: widget.idMovie,
-    );
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<DetailMovieViewModel>(context, listen: false)
+          .getMovieRecommendation(
+        idMovie: widget.idMovie,
+      );
+    });
     super.initState();
   }
 
@@ -58,20 +62,36 @@ class _DetailMoviePageState extends State<DetailMoviePage> {
             child: Text(viewModel.errorMovieRecommendation!),
           );
         } else {
-          return Container(
+          return SizedBox(
             height: 100,
-            color: Colors.red,
             child: ListView.builder(
+              itemCount:
+                  viewModel.movieRecomendationResponse.results?.length ?? 0,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    right: 16,
-                  ),
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    color: Colors.blue,
+                var data = viewModel.movieRecomendationResponse.results?[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DetailMoviePage(idMovie: data?.id),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      right: 16,
+                    ),
+                    child: SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: Image.network(
+                        'https://media.themoviedb.org/t/p/w220_and_h330_face/${data?.backdropPath}',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 );
               },
@@ -93,6 +113,9 @@ class _DetailMoviePageState extends State<DetailMoviePage> {
       );
     } else {
       return SingleChildScrollView(
+        padding: const EdgeInsets.only(
+          bottom: 16,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
